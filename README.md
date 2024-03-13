@@ -1,1 +1,2 @@
-# ts
+# TypeScriptEx
+Pruebas de TypeScript
