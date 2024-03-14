@@ -57,6 +57,33 @@ myFunctionVoid()
 console.log(myFunction())
 console.log(sumTwoNumbers(5,9.8))
 
+// Array 
+let myArray: string[] = []  // Array sólo de string
+let myArray2: (string | number)[] = []  // Array de string o números
+myArray2.push("Hola", 2)
+console.log("Arrary ----->" + myArray2)
+    // Array bidimensional
+type CellValue = "X" | "O" | null
+type GameBoard = [
+    [CellValue, CellValue, CellValue],
+    [CellValue, CellValue, CellValue],
+    [CellValue, CellValue, CellValue]
+]
+const gameBoard : GameBoard = [
+    ["X", "O", null],
+    ["O", null, "O"],
+    ["X", null, "O"]
+]
+gameBoard[0][1] = "X"
+
+// Tupla ( Arrays fijos en tamaño)
+type RGB =  readonly[number, number, number]
+const rgb: RGB = [255, 255, 0]
+
+//rgb.push(4) // Aunque las tuplas son de tamaño fijo esto lo permite.
+//               Para evitarlo se pone readonly al tipo de la tupla y evitar así que se añadan valores,
+//               pero también que se editen los que ya tiene
+
 // Listas
 let myList : Array<string> = ["Nombre", "Apellidos"]
 console.log(myList)
@@ -87,9 +114,15 @@ while (myCounter < myList.length){
     myCounter++
 }
 
+// template Union Type
+
+type Color = `#${string}`  
+const hexadecimalColor: Color = "#ff0000"
+
 // Clases
 
 class MyClass {
+    readonly id?: `${string}-${string}-${string}-${string}`     // El interrogante ? indica que es opcional
     name: string
     age: number
 
@@ -104,7 +137,7 @@ console.log(myClass)
 console.log(myClass.name)
 
 // Enum
-enum MyEnum {
+enum MyEnum {     
     DART = "dart",
     PYTHON = "python",
     SWIFT = "swift",
@@ -115,3 +148,111 @@ enum MyEnum {
 
 const myEnum = MyEnum.JAVA
 console.log(myEnum)
+
+// Se introduce en una constante para que al compilar a JS no cree código innecesario extra
+// Es preferible utilizar siempre la opción de const
+// Pero no se debe usar al crear una librería o componente que se consumirá en el exterior de la aplicación
+const enum ERROR_TYPES {  
+    NOT_FOUND = "notFound",
+    UNATHORIZED = "unathorized",
+    FORBIDDEN = "forbidden"
+}
+
+function mostrarMensaje (tipoDeError: ERROR_TYPES) {
+    if (tipoDeError === ERROR_TYPES.NOT_FOUND) {
+        console.log("No se encuentra el recurso")
+    } else if (tipoDeError === ERROR_TYPES.UNATHORIZED){
+        console.log("No tienes permisos para acceder")
+    } else if (tipoDeError === ERROR_TYPES.FORBIDDEN){
+        console.log("No tienes permisos para acceder")
+    } 
+}
+
+// Aserciones de tipos
+const canvas = document.getElementById('canvas') // as HTMLCanvasElement
+
+// TypeScript no sabe que el elemento que le pasas es un <canvas>
+// Devuelve null si no lo encuentra
+// HTMLElement si sí lo encuentra
+// HTMLCanvasElement es lo que necesitamos por eso se añade -> as HTMLCanvasElement
+// pero al hacer esto se pierde el hecho de indicarle que puede ser null
+// por lo cual es mejor hacer la aserción hacer después de la comprobación de null
+//  "const ctx = (canvas as HTMLCanvasElement).getContext('2d')"
+// pero tampoco podemos fiarnos de que lo que le hemos pasado sea realmente un canvas
+// por lo que conviene comprobarlo con instanceof HTMLCanvasElement
+// al hacer esto TypeScript ya sabe que lo que se le pasa es un canvas, por lo que tampoco es necesario ya
+// (canvas as HTMLCanvasElement)
+// es inferencia -> TypeScript se da cuenta que dentro del if ya sólo el canvas va apoder ser un HTMLCanvasElement
+
+if (/*canvas != null &&*/ canvas instanceof HTMLCanvasElement){
+    const ctx = canvas.getContext('2d')
+}
+
+// Interfaces
+
+interface Hero {
+    id: number
+    name: string
+    age: number
+    saludar: () => void
+}
+
+const heroe1: Hero = {
+    id: 1,
+    name: "Thor",
+    age: 30,
+    saludar() {
+        console.log("Hola")
+    }
+}
+
+interface Producto {
+    id: number
+    nombre: string
+    precio: number
+    cantidad: number
+}
+
+interface Zapatilla extends Producto {
+    talla: number
+}
+
+interface CarritoDeCompras {
+    totalPrice: number
+    productos:  (Producto | Zapatilla)[]
+}
+
+interface CarritoOps {
+    add(product: Producto): void,
+    remove(id:number): void,
+    clear(): void
+}
+
+const carrito: CarritoDeCompras = {
+    totalPrice: 100,
+    productos: [
+        {
+            id: 1,
+            nombre: "Producto 1",
+            precio: 10,
+            cantidad: 3,
+            talla: 37
+        },
+        {
+            id: 2,
+            nombre: "Producto 2",
+            precio: 7,
+            cantidad: 1
+        }
+    ]
+}
+
+// Narrowing
+
+function mostrarLongitud (objeto: number | string) {
+    if (typeof objeto === "string"){
+        return objeto.length
+    }
+    return objeto.toString().length
+}
+mostrarLongitud(1)

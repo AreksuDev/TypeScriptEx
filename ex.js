@@ -46,6 +46,21 @@ function sumTwoNumbers(firstNumber, secondNumber) {
 myFunctionVoid();
 console.log(myFunction());
 console.log(sumTwoNumbers(5, 9.8));
+// Array 
+var myArray = []; // Array sólo de string
+var myArray2 = []; // Array de string o números
+myArray2.push("Hola", 2);
+console.log("Arrary ----->" + myArray2);
+var gameBoard = [
+    ["X", "O", null],
+    ["O", null, "O"],
+    ["X", null, "O"]
+];
+gameBoard[0][1] = "X";
+var rgb = [255, 255, 0];
+//rgb.push(4) // Aunque las tuplas son de tamaño fijo esto lo permite.
+//               Para evitarlo se pone readonly al tipo de la tupla y evitar así que se añadan valores,
+//               pero también que se editen los que ya tiene
 // Listas
 var myList = ["Nombre", "Apellidos"];
 console.log(myList);
@@ -72,6 +87,7 @@ while (myCounter < myList.length) {
     console.log(myList[myCounter]);
     myCounter++;
 }
+var hexadecimalColor = "#ff0000";
 // Clases
 var MyClass = /** @class */ (function () {
     function MyClass(name, age) {
@@ -95,3 +111,65 @@ var MyEnum;
 })(MyEnum || (MyEnum = {}));
 var myEnum = MyEnum.JAVA;
 console.log(myEnum);
+function mostrarMensaje(tipoDeError) {
+    if (tipoDeError === "notFound" /* ERROR_TYPES.NOT_FOUND */) {
+        console.log("No se encuentra el recurso");
+    }
+    else if (tipoDeError === "unathorized" /* ERROR_TYPES.UNATHORIZED */) {
+        console.log("No tienes permisos para acceder");
+    }
+    else if (tipoDeError === "forbidden" /* ERROR_TYPES.FORBIDDEN */) {
+        console.log("No tienes permisos para acceder");
+    }
+}
+// Aserciones de tipos
+var canvas = document.getElementById('canvas'); // as HTMLCanvasElement
+// TypeScript no sabe que el elemento que le pasas es un <canvas>
+// Devuelve null si no lo encuentra
+// HTMLElement si sí lo encuentra
+// HTMLCanvasElement es lo que necesitamos por eso se añade -> as HTMLCanvasElement
+// pero al hacer esto se pierde el hecho de indicarle que puede ser null
+// por lo cual es mejor hacer la aserción hacer después de la comprobación de null
+//  "const ctx = (canvas as HTMLCanvasElement).getContext('2d')"
+// pero tampoco podemos fiarnos de que lo que le hemos pasado sea realmente un canvas
+// por lo que conviene comprobarlo con instanceof HTMLCanvasElement
+// al hacer esto TypeScript ya sabe que lo que se le pasa es un canvas, por lo que tampoco es necesario ya
+// (canvas as HTMLCanvasElement)
+// es inferencia -> TypeScript se da cuenta que dentro del if ya sólo el canvas va apoder ser un HTMLCanvasElement
+if ( /*canvas != null &&*/canvas instanceof HTMLCanvasElement) {
+    var ctx = canvas.getContext('2d');
+}
+var heroe1 = {
+    id: 1,
+    name: "Thor",
+    age: 30,
+    saludar: function () {
+        console.log("Hola");
+    }
+};
+var carrito = {
+    totalPrice: 100,
+    productos: [
+        {
+            id: 1,
+            nombre: "Producto 1",
+            precio: 10,
+            cantidad: 3,
+            talla: 37
+        },
+        {
+            id: 2,
+            nombre: "Producto 2",
+            precio: 7,
+            cantidad: 1
+        }
+    ]
+};
+// Narrowing
+function mostrarLongitud(objeto) {
+    if (typeof objeto === "string") {
+        return objeto.length;
+    }
+    return objeto.toString().length;
+}
+mostrarLongitud(1);
